@@ -16,7 +16,6 @@ router.post(
     [
         check('plate', 'La placa es obligatoria').not().isEmpty().isLength({ max: 100 }),
         check('type', 'El tipo de vehículo es obligatorio').not().isEmpty().isLength({ max: 100 }),
-        check('owner', 'El ID del propietario no es válido').isMongoId(),
         validateFields
     ],
     createVehicleController
@@ -39,7 +38,6 @@ router.put(
         check('id', 'El ID no es válido').isMongoId(),
         check('plate', 'La placa no debe exceder 100 caracteres').optional().isLength({ max: 100 }),
         check('type', 'El tipo de vehículo no debe exceder 100 caracteres').optional().isLength({ max: 100 }),
-        check('owner', 'El ID del propietario no es válido').optional().isMongoId(),
         validateFields
     ],
     updateVehicleController

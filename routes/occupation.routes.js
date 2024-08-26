@@ -14,8 +14,8 @@ const router = Router();
 router.post(
     '/',
     [
-        check('ParkingSpot', 'El ID del espacio de estacionamiento es obligatorio').isMongoId(),
-        check('vehiclePlate', 'La placa del vehículo es obligatoria').not().isEmpty(),
+        check('parkingSpot', 'El ID del espacio de estacionamiento es obligatorio').isMongoId(),
+        check('vehicle', 'El ID del vehículo es obligatorio').isMongoId(),
         check('startTime', 'La hora de inicio es obligatoria').isISO8601(),
         check('endTime', 'La hora de finalización es obligatoria').isISO8601(),
         validateFields

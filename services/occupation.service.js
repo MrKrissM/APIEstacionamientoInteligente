@@ -7,7 +7,7 @@ const createOccupation = async (occupationData) => {
 };
 
 const getOccupations = async () => {
-    return await Occupation.find().populate('parkingSpot Vehicle');
+    return await Occupation.find().populate('parkingSpot vehicle');
 };
 
 const getOccupationById = async (id) => {
@@ -25,6 +25,7 @@ const endOccupation = async (id, endTime) => {
 module.exports = {
     createOccupation,
     getOccupations,
+    getOccupationById,
     updateOccupation,
     endOccupation
 };
