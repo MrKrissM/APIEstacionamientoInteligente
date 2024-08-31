@@ -1,28 +1,24 @@
 const mongoose = require('mongoose');
 
-const ParkingSpotSchema = new mongoose.Schema({
-    parkingLot: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'ParkingLot',
+const parkingSpotSchema = new mongoose.Schema({
+    parkingLotName: {
+        type: String,
         required: true
     },
     number: {
         type: Number,
-        required: true,
-        unique: true
+        required: true
     },
     isOccupied: {
         type: Boolean,
         default: false
-    },
-    vehicle: {
-        type: String,
-        default: null,
-        maxlength: 100
-    },
-
+    }
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('ParkingSpot', ParkingSpotSchema);
+parkingSpotSchema.index({ parkingLotName: 1, number: 1 }, { unique: true });
+
+const ParkingSpot = mongoose.model('ParkingSpot', parkingSpotSchema);
+
+module.exports = ParkingSpot;

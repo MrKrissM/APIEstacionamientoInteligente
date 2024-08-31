@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
 
 const OccupationSchema = new mongoose.Schema({
-    parkingSpot: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ParkingSpot',
+    parkingLotName: {
+        type: String,
         required: true
     },
-    vehicle: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Vehicle',
+    parkingSpotNumber: {
+        type: Number,
+        required: true
+    },
+    vehiclePlate: {
+        type: String,
         required: true
     },
     startTime: {
@@ -17,11 +19,11 @@ const OccupationSchema = new mongoose.Schema({
     },
     endTime: {
         type: Date,
-        required: true
+        required: false
     },
     status: {
         type: String,
-        maxlength: 100,
+        enum: ['active', 'completed'],
         required: true,
         default: 'active'
     }

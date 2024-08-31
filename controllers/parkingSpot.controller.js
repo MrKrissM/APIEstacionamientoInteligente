@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { createParkingSpot, getParkingSpots, getParkingSpotById, updateParkingSpot } = require('../services/parkingSpot.service');
+const { createParkingSpot, getParkingSpots, getParkingSpotById, updateParkingSpot, deleteParkingSpot } = require('../services/parkingSpot.service');
 
 const createParkingSpotController = async (req, res = response) => {
     try {
@@ -9,11 +9,19 @@ const createParkingSpotController = async (req, res = response) => {
             parkingSpot
         });
     } catch (error) {
-        res.status(500).json({
-            ok: false,
-            msg: 'Failed to create parking spot',
-            error: error.message
-        });
+        if (error.message === 'Duplicate parking spot for the same parking lot') {
+            res.status(400).json({
+                ok: false,
+                msg: 'Failed to create parking spot',
+                error: error.message
+            });
+        } else {
+            res.status(500).json({
+                ok: false,
+                msg: 'Failed to create parking spot',
+                error: error.message
+            });
+        }
     }
 };
 
@@ -71,9 +79,34 @@ const updateParkingSpotController = async (req, res = response) => {
     }
 };
 
+const deleteParkingSpotController = async (req, res = response) => {
+    try {
+        const deletedSpot = await deleteParkingSpot(req.params.id);
+        if (!deletedSpot) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Parking spot not found'
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            msg: 'Parking spot deleted successfully'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Failed to delete parking spot',
+            error: error.message
+        });
+    }
+};
+
+
 module.exports = {
     createParkingSpotController,
     getParkingSpotsController,
     getParkingSpotByIdController,
-    updateParkingSpotController
+    updateParkingSpotController,
+    deleteParkingSpotController
 };

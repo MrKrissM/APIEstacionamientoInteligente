@@ -7,7 +7,7 @@ const {
     updateVehicleController,
     deleteVehicleController
 } = require('../controllers/vehicle.controller');
-const validateFields = require('../middlewares/validate-fields');
+const validateFields = require('../middlewares/validateFields');
 
 const router = Router();
 

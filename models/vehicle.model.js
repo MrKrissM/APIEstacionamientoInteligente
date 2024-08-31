@@ -4,7 +4,7 @@ const VehicleSchema = new mongoose.Schema({
   plate: { 
     type: String, 
     required: true, 
-    maxlength: 100 
+    maxlength: 8 
 },
   type: { 
     type: String, 

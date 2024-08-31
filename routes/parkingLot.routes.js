@@ -7,7 +7,7 @@ const {
     updateParkingLotController,
     deleteParkingLotController
 } = require('../controllers/parkingLot.controller');
-const validateFields = require('../middlewares/validate-fields');
+const validateFields = require('../middlewares/validateFields');
 
 const router = Router();
 

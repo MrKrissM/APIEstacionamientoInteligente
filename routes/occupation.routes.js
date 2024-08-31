@@ -4,9 +4,11 @@ const {
     createOccupationController, 
     getOccupationsController,
     updateOccupationController,
-    endOccupationController
+    getOccupationByIdController,
+    endOccupationController,
+    deleteOccupationController
 } = require('../controllers/occupation.controller');
-const validateFields = require('../middlewares/validate-fields');
+const validateFields = require('../middlewares/validateFields');
 
 const router = Router();
 
@@ -14,10 +16,10 @@ const router = Router();
 router.post(
     '/',
     [
-        check('parkingSpot', 'El ID del espacio de estacionamiento es obligatorio').isMongoId(),
-        check('vehicle', 'El ID del vehículo es obligatorio').isMongoId(),
+        check('parkingLotName', 'El nombre del estacionamiento es obligatorio').notEmpty(),
+        check('parkingSpotNumber', 'El número del espacio de estacionamiento es obligatorio').isInt(),
+        check('vehiclePlate', 'La placa del vehículo es obligatoria').notEmpty(),
         check('startTime', 'La hora de inicio es obligatoria').isISO8601(),
-        check('endTime', 'La hora de finalización es obligatoria').isISO8601(),
         validateFields
     ],
     createOccupationController
@@ -25,6 +27,15 @@ router.post(
 
 // Obtener todas las ocupaciones
 router.get('/', getOccupationsController);
+
+router.get(
+    '/:id',
+    [
+        check('id', 'El ID no es válido').isMongoId(),
+        validateFields
+    ],
+    getOccupationByIdController
+);
 
 // Actualizar una ocupación
 router.put(
@@ -45,6 +56,16 @@ router.put(
         validateFields
     ],
     endOccupationController
+);
+
+// Eliminar una ocupación
+router.delete(
+    '/:id',
+    [
+        check('id', 'El ID de la ocupación no es válido').isMongoId(),
+        validateFields
+    ],
+    deleteOccupationController
 );
 
 module.exports = router;
