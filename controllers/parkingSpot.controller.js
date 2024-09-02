@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { createParkingSpot, getParkingSpots, getParkingSpotById, updateParkingSpot, deleteParkingSpot } = require('../services/parkingSpot.service');
+const { createParkingSpot, getParkingSpots, getParkingSpotById, getParkingSpotsByParkingLotName, updateParkingSpot, deleteParkingSpot } = require('../services/parkingSpot.service');
 
 const createParkingSpotController = async (req, res = response) => {
     try {
@@ -9,7 +9,13 @@ const createParkingSpotController = async (req, res = response) => {
             parkingSpot
         });
     } catch (error) {
-        if (error.message === 'Duplicate parking spot for the same parking lot') {
+        if (error.message === 'El parking lot especificado no existe') {
+            res.status(400).json({
+                ok: false,
+                msg: 'Failed to create parking spot',
+                error: error.message
+            });
+        } else if (error.message === 'Ya existe un parking spot con este número en el mismo parking lot') {
             res.status(400).json({
                 ok: false,
                 msg: 'Failed to create parking spot',
@@ -63,6 +69,23 @@ const getParkingSpotByIdController = async (req, res = response) => {
     }
 };
 
+const getParkingSpotsByParkingLotNameController = async (req, res = response) => {
+    try {
+        const { parkingLotName } = req.params;
+        const parkingSpots = await getParkingSpotsByParkingLotName(parkingLotName);
+        res.status(200).json({
+            ok: true,
+            parkingSpots
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener los parking spots',
+            error: error.message
+        });
+    }
+};
+
 const updateParkingSpotController = async (req, res = response) => {
     try {
         const updatedSpot = await updateParkingSpot(req.params.id, req.body);
@@ -107,6 +130,7 @@ module.exports = {
     createParkingSpotController,
     getParkingSpotsController,
     getParkingSpotByIdController,
+    getParkingSpotsByParkingLotNameController,
     updateParkingSpotController,
     deleteParkingSpotController
 };

@@ -8,8 +8,16 @@ const {
     deleteParkingLotController
 } = require('../controllers/parkingLot.controller');
 const validateFields = require('../middlewares/validateFields');
+const { authenticateToken } = require('../middlewares/auth');
+const restrictDelete = require('../middlewares/restrictDelete');
 
 const router = Router();
+
+// Todas las rutas requieren autenticación
+router.use(authenticateToken);
+
+// Aplicar restrictDelete a todas las rutas
+router.use(restrictDelete);
 
 router.post(
     '/',

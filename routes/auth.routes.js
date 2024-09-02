@@ -1,9 +1,10 @@
 const express = require('express');
 const { check } = require('express-validator');
 const validateFields = require('../middlewares/validateFields');
-const { register, login, listUsers, createAdmin } = require('../controllers/auth.controller');
-const { authenticateToken } = require('../middlewares/auth');
+const { register, login, listUsers, createAdmin, deleteUser, getUserProfile } = require('../controllers/auth.controller');
+const {authenticateToken} = require('../middlewares/auth');
 const checkRole = require('../middlewares/checkRole');
+const logUserActions = require('../middlewares/logUserActions');
 
 const router = express.Router();
 
@@ -32,6 +33,12 @@ router.post('/create-admin', [
     validateFields
 ], createAdmin);
 
-router.get('/users', authenticateToken, checkRole(['admin']), listUsers);
+router.get('/users', authenticateToken, checkRole(['admin']), logUserActions, listUsers);
+
+// Nueva ruta para eliminar usuarios
+router.delete('/users/:userId', authenticateToken, checkRole(['admin']), logUserActions, deleteUser);
+
+// Ruta para obtener el perfil del usuario conectado
+router.get('/profile', authenticateToken, logUserActions, getUserProfile);
 
 module.exports = router;

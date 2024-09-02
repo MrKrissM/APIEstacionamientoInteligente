@@ -19,6 +19,5 @@ const parkingSpotSchema = new mongoose.Schema({
 
 parkingSpotSchema.index({ parkingLotName: 1, number: 1 }, { unique: true });
 
-const ParkingSpot = mongoose.model('ParkingSpot', parkingSpotSchema);
+module.exports  = mongoose.model('ParkingSpot', parkingSpotSchema);
 
-module.exports = ParkingSpot;

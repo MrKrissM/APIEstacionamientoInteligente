@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { createVehicle, getVehicles, getVehicleById, updateVehicle, deleteVehicle } = require('../services/vehicle.service');
+const { createVehicle, getVehicles, getVehicleById, getVehicleByPlate, updateVehicle, deleteVehicle } = require('../services/vehicle.service');
 
 const createVehicleController = async (req, res = response) => {
     try {
@@ -58,6 +58,21 @@ const getVehicleByIdController = async (req, res = response) => {
     }
 };
 
+const getVehicleByPlateController = async (req, res = response) => {
+    try {
+        const plateVehicle = await getVehicleByPlate(req.params.plate);
+        res.status(200).json({
+            ok: true,
+            plateVehicle
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error to get plate from Vehicle'
+        });
+    }
+};
+
 const updateVehicleController = async (req, res = response) => {
     try {
         const updatedVehicle = await updateVehicle(req.params.id, req.body);
@@ -107,6 +122,7 @@ const deleteVehicleController = async (req, res = response) => {
 module.exports = {
     createVehicleController,
     getVehiclesController,
+    getVehicleByPlateController,
     getVehicleByIdController,
     updateVehicleController,
     deleteVehicleController

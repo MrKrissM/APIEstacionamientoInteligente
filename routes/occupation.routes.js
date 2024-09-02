@@ -3,14 +3,23 @@ const { check } = require('express-validator');
 const { 
     createOccupationController, 
     getOccupationsController,
-    updateOccupationController,
-    getOccupationByIdController,
+    getActiveOccupationsController,
+    getOccupationsByVehicleController,
+    getOccupationsByParkingLotController,
     endOccupationController,
     deleteOccupationController
 } = require('../controllers/occupation.controller');
 const validateFields = require('../middlewares/validateFields');
+const { authenticateToken } = require('../middlewares/auth');
+const restrictDelete = require('../middlewares/restrictDelete');
 
 const router = Router();
+
+// Todas las rutas requieren autenticación
+router.use(authenticateToken);
+
+// Aplicar restrictDelete a todas las rutas
+router.use(restrictDelete);
 
 // Crear una nueva ocupación
 router.post(
@@ -28,23 +37,28 @@ router.post(
 // Obtener todas las ocupaciones
 router.get('/', getOccupationsController);
 
+// Obtener todas las ocupaciones activas
+router.get('/active', getActiveOccupationsController);
+
+
+// Obtener ocupaciones por vehículo
 router.get(
-    '/:id',
+    '/vehicle/:plate',
     [
-        check('id', 'El ID no es válido').isMongoId(),
+        check('plate', 'La placa del vehículo es obligatoria').notEmpty(),
         validateFields
     ],
-    getOccupationByIdController
+    getOccupationsByVehicleController
 );
 
-// Actualizar una ocupación
-router.put(
-    '/:id',
+// Obtener ocupaciones por parking lot
+router.get(
+    '/parkinglot/:name',
     [
-        check('id', 'El ID de la ocupación no es válido').isMongoId(),
+        check('name', 'El nombre del parking lot es obligatorio').notEmpty(),
         validateFields
     ],
-    updateOccupationController
+    getOccupationsByParkingLotController
 );
 
 // Finalizar una ocupación
@@ -52,7 +66,6 @@ router.put(
     '/:id/end',
     [
         check('id', 'El ID de la ocupación no es válido').isMongoId(),
-        check('endTime', 'La hora de finalización es obligatoria').isISO8601(),
         validateFields
     ],
     endOccupationController

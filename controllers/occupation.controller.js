@@ -1,5 +1,13 @@
 const { response } = require('express');
-const { createOccupation, getOccupations, updateOccupation, getOccupationById, endOccupation, deleteOccupation } = require('../services/occupation.service');
+const {
+    createOccupation,
+    endOccupation,
+    getOccupations,
+    getActiveOccupations,
+    getOccupationsByVehicle,
+    getOccupationsByParkingLot,
+    deleteOccupation
+} = require('../services/occupation.service');
 
 const createOccupationController = async (req, res = response) => {
     try {
@@ -9,10 +17,9 @@ const createOccupationController = async (req, res = response) => {
             occupation
         });
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             ok: false,
-            msg: 'Failed to create occupation',
-            error: error.message
+            msg: error.message
         });
     }
 };
@@ -33,62 +40,66 @@ const getOccupationsController = async (req, res = response) => {
     }
 };
 
-const getOccupationByIdController = async (req, res = response) => {
+const getActiveOccupationsController = async (req, res = response) => {
     try {
-        const occupation = await getOccupationById(req.params.id);
-        if (!occupation) {
-            return res.status(404).json({
-                ok: false,
-                msg: 'occupation not found'
-            });
-        }
+        const occupations = await getActiveOccupations();
         res.status(200).json({
             ok: true,
-            occupation
+            occupations
         });
     } catch (error) {
-        console.error(error);
         res.status(500).json({
             ok: false,
-            msg: 'Failed to get occupation',
-            error: error.message
+            msg: 'Error al obtener las ocupaciones activas'
         });
     }
 };
 
-const updateOccupationController = async (req, res = response) => {
+const getOccupationsByVehicleController = async (req, res = response) => {
     try {
-        const updatedOccupation = await updateOccupation(req.params.id, req.body);
+        const occupations = await getOccupationsByVehicle(req.params.plate);
         res.status(200).json({
             ok: true,
-            occupation: updatedOccupation
+            occupations
         });
     } catch (error) {
         res.status(500).json({
             ok: false,
-            msg: 'Failed to update occupation',
-            error: error.message
+            msg: 'Error al obtener las ocupaciones del vehículo'
+        });
+    }
+};
+
+const getOccupationsByParkingLotController = async (req, res = response) => {
+    try {
+        const occupations = await getOccupationsByParkingLot(req.params.name);
+        res.status(200).json({
+            ok: true,
+            occupations
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener las ocupaciones del parking lot'
         });
     }
 };
 
 const endOccupationController = async (req, res = response) => {
     try {
-        const endedOccupation = await endOccupation(req.params.id, req.body.endTime);
+        const occupation = await endOccupation(req.params.id);
         res.status(200).json({
             ok: true,
-            occupation: endedOccupation
+            occupation
         });
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             ok: false,
-            msg: 'Failed to end occupation',
-            error: error.message
+            msg: error.message
         });
     }
 };
 
-// Controlador para eliminar una ocupación
 const deleteOccupationController = async (req, res = response) => {
     try {
         const occupation = await deleteOccupation(req.params.id);
@@ -114,8 +125,9 @@ const deleteOccupationController = async (req, res = response) => {
 module.exports = {
     createOccupationController,
     getOccupationsController,
-    updateOccupationController,
-    getOccupationByIdController,
+    getActiveOccupationsController,
+    getOccupationsByVehicleController,
+    getOccupationsByParkingLotController,
     endOccupationController,
     deleteOccupationController
 };

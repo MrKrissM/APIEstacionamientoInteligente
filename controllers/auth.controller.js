@@ -89,6 +89,7 @@ const listUsers = async (req, res) => {
       });
     }
   };
+  
 
   const createAdmin = async (req, res) => {
     try {
@@ -119,9 +120,55 @@ const listUsers = async (req, res) => {
     }
   };
 
+  const deleteUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                ok: false,
+                message: 'Usuario no encontrado'
+            });
+        }
+
+        await User.findByIdAndDelete(userId);
+
+        res.json({
+            ok: true,
+            message: 'Usuario eliminado exitosamente'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            message: 'Error en el servidor'
+        });
+    }
+};
+
+const getUserProfile = (req, res) => {
+    try {
+      const user = req.user;
+  
+      res.json({
+        ok: true,
+        user
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        ok: false,
+        message: 'Error en el servidor'
+      });
+    }
+  };
+
 module.exports = {
     register,
     login,
     listUsers,
-    createAdmin
+    createAdmin,
+    deleteUser, 
+    getUserProfile
 };

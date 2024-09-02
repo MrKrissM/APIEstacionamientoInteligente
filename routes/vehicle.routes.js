@@ -4,24 +4,34 @@ const {
     createVehicleController, 
     getVehiclesController,
     getVehicleByIdController,
+    getVehicleByPlateController,
     updateVehicleController,
     deleteVehicleController
 } = require('../controllers/vehicle.controller');
 const validateFields = require('../middlewares/validateFields');
+const { authenticateToken } = require('../middlewares/auth');
+const restrictDelete = require('../middlewares/restrictDelete');
 
 const router = Router();
+
+// Todas las rutas requieren autenticación
+router.use(authenticateToken);
+
+// Aplicar restrictDelete a todas las rutas
+router.use(restrictDelete);
 
 router.post(
     '/',
     [
         check('plate', 'La placa es obligatoria').not().isEmpty().isLength({ max: 100 }),
-        check('type', 'El tipo de vehículo es obligatorio').not().isEmpty().isLength({ max: 100 }),
         validateFields
     ],
     createVehicleController
 );
 
 router.get('/', getVehiclesController);
+
+router.get('/vehicle/:plate', getVehicleByPlateController);
 
 router.get(
     '/:id',

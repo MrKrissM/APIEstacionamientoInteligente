@@ -19,7 +19,6 @@ const OccupationSchema = new mongoose.Schema({
     },
     endTime: {
         type: Date,
-        required: false
     },
     status: {
         type: String,
