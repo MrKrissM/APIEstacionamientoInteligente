@@ -101,6 +101,14 @@ const deleteOccupation = async (id) => {
     return occupation;
 };
 
+const updateOccupation = async (id, updateData) => {
+    const occupation = await Occupation.findByIdAndUpdate(id, updateData, { new: true });
+    if (!occupation) {
+        throw new Error('Ocupación no encontrada');
+    }
+    return occupation;
+};
+
 
 module.exports = {
     createOccupation,
@@ -109,5 +117,6 @@ module.exports = {
     getActiveOccupations,
     getOccupationsByVehicle,
     getOccupationsByParkingLot,
-    deleteOccupation
+    deleteOccupation,
+    updateOccupation
 };

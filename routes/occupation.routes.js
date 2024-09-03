@@ -7,6 +7,7 @@ const {
     getOccupationsByVehicleController,
     getOccupationsByParkingLotController,
     endOccupationController,
+    updateOccupationController,
     deleteOccupationController
 } = require('../controllers/occupation.controller');
 const validateFields = require('../middlewares/validateFields');
@@ -60,6 +61,20 @@ router.get(
     ],
     getOccupationsByParkingLotController
 );
+
+
+// Actualizar una ocupación
+router.put(
+    '/:id',
+    [
+        check('id', 'El ID de la ocupación no es válido').isMongoId(),
+        validateFields
+    ],
+    updateOccupationController
+);
+
+module.exports = router;
+
 
 // Finalizar una ocupación
 router.put(

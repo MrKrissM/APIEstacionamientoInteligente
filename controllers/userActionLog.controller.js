@@ -6,8 +6,6 @@ const getUserActions = async (req, res) => {
 
     const actions = await UserActionLog.find({ userId }).sort({ timestamp: -1 });
 
-    console.log('Acciones encontradas:', actions); // Añadir un log para verificar
-
     res.json({
       ok: true,
       actions

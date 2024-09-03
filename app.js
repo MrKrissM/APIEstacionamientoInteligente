@@ -2,11 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { dbConnection } = require('./database/config');
-const userActionLogRoutes = require('./routes/userActionLog.routes');
+const logUserActions = require('./middlewares/logUserActions');
+const {authenticateToken} = require('./middlewares/auth');
+const formatDate = require('./middlewares/formatDate');
 
 // Importar rutas de autenticación
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
+const userActionLogRoutes = require('./routes/userActionLog.routes');
 
 const app = express();
 
@@ -15,6 +18,10 @@ dbConnection();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Aplica authenticateToken y logUserActions a todas las rutas que comienzan con /api
+app.use('/api', authenticateToken, logUserActions);
+app.use(formatDate);
 
 // Rutas existentes
 app.use('/api/parkinglots', require('./routes/parkingLot.routes'));

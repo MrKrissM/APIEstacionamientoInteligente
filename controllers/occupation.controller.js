@@ -6,6 +6,7 @@ const {
     getActiveOccupations,
     getOccupationsByVehicle,
     getOccupationsByParkingLot,
+    updateOccupation,
     deleteOccupation
 } = require('../services/occupation.service');
 
@@ -100,6 +101,21 @@ const endOccupationController = async (req, res = response) => {
     }
 };
 
+const updateOccupationController = async (req, res = response) => {
+    try {
+        const occupation = await updateOccupation(req.params.id, req.body);
+        res.status(200).json({
+            ok: true,
+            occupation
+        });
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            msg: error.message
+        });
+    }
+};
+
 const deleteOccupationController = async (req, res = response) => {
     try {
         const occupation = await deleteOccupation(req.params.id);
@@ -129,5 +145,6 @@ module.exports = {
     getOccupationsByVehicleController,
     getOccupationsByParkingLotController,
     endOccupationController,
+    updateOccupationController,
     deleteOccupationController
 };

@@ -13,7 +13,6 @@ const logUserActions = async (req, res, next) => {
       });
 
       await logEntry.save();
-      console.log('Acción registrada:', logEntry); // Añadir un log para verificar
 
     } catch (error) {
       console.error('Error al registrar la acción del usuario:', error);
