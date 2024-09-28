@@ -1,0 +1,28 @@
+Admin:
+{
+  "username": "MrCriss",
+  "email": "admin@ejemplo.com",
+  "password": "adminpassword123"
+}
+
+User1:
+{
+  "username":"MrCriss",
+  "email": "landcris@gmail.com",
+  "password": "123456"
+}
+
+User2:
+{
+  "username":"MsVale",
+  "email": "valentina@gmail.com",
+  "password": "123456"
+}
+
+User3:
+{
+  "username":"MsNadie",
+  "email": "nadie@gmail.com",
+  "password": "1234567"
+}
+
