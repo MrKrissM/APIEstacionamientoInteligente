@@ -1,22 +1,22 @@
 const { response } = require('express');
 const { createVehicle, getVehicles, getVehicleById, getVehicleByPlate, updateVehicle, deleteVehicle } = require('../services/vehicle.service');
 
-const createVehicleController = async (req, res = response) => {
-    try {
-        const vehicle = await createVehicle(req.body);
-        res.status(201).json({
-            ok: true,
-            vehicle
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            ok: false,
-            msg: 'Failed to create vehicle',
-            error: error.message
-        });
-    }
-};
+const createVehicleController = async (req, res = response) => {     
+    try {         
+      const vehicle = await createVehicle(req.body);         
+      res.status(201).json({             
+        ok: true,             
+        data: [vehicle]  // Envuelve el vehículo en un array llamado 'data'
+      });     
+    } catch (error) {         
+      console.error(error);         
+      res.status(500).json({             
+        ok: false,             
+        msg: 'Failed to create vehicle',             
+        error: error.message         
+      });     
+    } 
+  };
 
 const getVehiclesController = async (req, res = response) => {
     try {
@@ -84,7 +84,7 @@ const updateVehicleController = async (req, res = response) => {
         }
         res.status(200).json({
             ok: true,
-            vehicle: updatedVehicle
+            vehicle: [updatedVehicle]
         });
     } catch (error) {
         console.error(error);
