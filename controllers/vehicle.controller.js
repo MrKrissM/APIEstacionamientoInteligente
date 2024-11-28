@@ -6,7 +6,7 @@ const createVehicleController = async (req, res = response) => {
       const vehicle = await createVehicle(req.body);         
       res.status(201).json({             
         ok: true,             
-        data: [vehicle]  // Envuelve el vehículo en un array llamado 'data'
+        data: [vehicle]  // Mantén el formato de respuesta
       });     
     } catch (error) {         
       console.error(error);         
@@ -16,7 +16,7 @@ const createVehicleController = async (req, res = response) => {
         error: error.message         
       });     
     } 
-  };
+};
 
 const getVehiclesController = async (req, res = response) => {
     try {
@@ -84,7 +84,7 @@ const updateVehicleController = async (req, res = response) => {
         }
         res.status(200).json({
             ok: true,
-            vehicle: [updatedVehicle]
+            data: [updatedVehicle]  // Asegúrate de enviar en formato de array
         });
     } catch (error) {
         console.error(error);
@@ -95,7 +95,6 @@ const updateVehicleController = async (req, res = response) => {
         });
     }
 };
-
 const deleteVehicleController = async (req, res = response) => {
     try {
         const deletedVehicle = await deleteVehicle(req.params.id);
@@ -107,6 +106,7 @@ const deleteVehicleController = async (req, res = response) => {
         }
         res.status(200).json({
             ok: true,
+            id: deletedVehicle._id,  // Devuelve el ID
             msg: 'Vehicle deleted successfully'
         });
     } catch (error) {
