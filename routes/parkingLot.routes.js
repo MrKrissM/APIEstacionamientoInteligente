@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { 
-    createParkingLotController, 
+const {
+    createParkingLotController,
     getParkingLotsController,
     getParkingLotByIdController,
     updateParkingLotController,
-    deleteParkingLotController
+    deleteParkingLotController,
+    getParkingSpotsByParkingLotController
 } = require('../controllers/parkingLot.controller');
 const validateFields = require('../middlewares/validateFields');
 const { authenticateToken } = require('../middlewares/auth');
@@ -40,6 +41,15 @@ router.get(
         validateFields
     ],
     getParkingLotByIdController
+);
+
+router.get(
+    '/:id/spots',
+    [
+        check('id', 'El ID no es válido').isMongoId(),
+        validateFields
+    ],
+    getParkingSpotsByParkingLotController  // Necesitaremos crear este controlador
 );
 
 router.put(

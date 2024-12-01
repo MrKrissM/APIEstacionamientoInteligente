@@ -1,4 +1,5 @@
 const { response } = require('express');
+const ParkingLot = require('../models/parkingLot.model'); // Añade esta línea
 const { createParkingSpot, getParkingSpots, getParkingSpotById, getParkingSpotsByParkingLotName, updateParkingSpot, deleteParkingSpot } = require('../services/parkingSpot.service');
 
 const createParkingSpotController = async (req, res = response) => {
@@ -85,6 +86,7 @@ const getParkingSpotsByParkingLotNameController = async (req, res = response) =>
         });
     }
 };
+
 
 const updateParkingSpotController = async (req, res = response) => {
     try {

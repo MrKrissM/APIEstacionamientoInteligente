@@ -9,6 +9,10 @@ const parkingSpotSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    floor: {
+        type: Number,
+        required: true
+      },
     isOccupied: {
         type: Boolean,
         default: false

@@ -2,10 +2,20 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 
-const register = async (req, res) => {
+// En auth.controller.js
+const registerByAdmin = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    // Verificar que solo un admin puede registrar usuarios
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        ok: false,
+        message: 'Solo los administradores pueden registrar usuarios'
+      });
+    }
 
+    const { username, email, password, role = 'user' } = req.body;
+
+    // Verificar si el usuario o email ya existen
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
     if (userExists) {
       return res.status(400).json({
@@ -14,15 +24,27 @@ const register = async (req, res) => {
       });
     }
 
+    // Generar salt y hash de la contraseña
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = new User({ username, email, password: hashedPassword });
+    // Crear nuevo usuario (con el rol especificado, por defecto 'user')
+    const user = new User({ 
+      username, 
+      email, 
+      password: hashedPassword,
+      role 
+    });
     await user.save();
 
     res.status(201).json({
       ok: true,
-      message: 'Usuario registrado exitosamente'
+      message: 'Usuario registrado exitosamente',
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
     });
   } catch (error) {
     console.error(error);
@@ -186,11 +208,39 @@ const getUserProfile = (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+      const { userId } = req.params;
+      const { username, email, role } = req.body;
+
+      // Buscar y actualizar el usuario
+      const user = await User.findByIdAndUpdate(
+          userId, 
+          { username, email, role }, 
+          { new: true } // Devuelve el usuario actualizado
+      );
+
+      if (!user) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      res.json({ 
+          message: 'Usuario actualizado exitosamente', 
+          user 
+      });
+  } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+      res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+
 module.exports = {
-  register,
+  registerByAdmin,
   login,
   listUsers,
   createAdmin,
   deleteUser,
-  getUserProfile
+  getUserProfile,
+  updateUser
 };

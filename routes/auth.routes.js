@@ -2,7 +2,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 const validateFields = require('../middlewares/validateFields');
-const { register, login, listUsers, createAdmin, deleteUser, getUserProfile } = require('../controllers/auth.controller');
+const { registerByAdmin, login, listUsers, createAdmin, deleteUser, getUserProfile,updateUser } = require('../controllers/auth.controller');
 const {authenticateToken} = require('../middlewares/auth');
 const checkRole = require('../middlewares/checkRole');
 const logUserActions = require('../middlewares/logUserActions');
@@ -14,12 +14,18 @@ router.get('/me', authenticateToken, (req, res) => {
 });
 
 // Ruta de registro
-router.post('/register', [
-    check('username', 'El nombre de usuario es obligatorio').not().isEmpty(),
-    check('email', 'El email no es válido').isEmail(),
-    check('password', 'La contraseña debe tener al menos 6 caracteres').isLength({ min: 6 }),
-    validateFields
-], register);
+router.post('/register-user', 
+    authenticateToken, 
+    checkRole(['admin']), 
+    [
+      check('username', 'El nombre de usuario es obligatorio').not().isEmpty(),
+      check('email', 'El email no es válido').isEmail(),
+      check('password', 'La contraseña debe tener al menos 6 caracteres').isLength({ min: 6 }),
+      check('role').optional().isIn(['user', 'admin']),
+      validateFields
+    ], 
+    registerByAdmin
+  );
 
 // Única ruta de login
 router.post('/login', [
@@ -43,5 +49,6 @@ router.post('/create-admin',
 router.get('/users', authenticateToken, checkRole(['admin']), logUserActions, listUsers);
 router.delete('/users/:userId', authenticateToken, checkRole(['admin']), logUserActions, deleteUser);
 router.get('/profile', authenticateToken, logUserActions, getUserProfile);
+router.put('/users/:userId', authenticateToken, checkRole(['admin']), logUserActions, updateUser);
 
 module.exports = router;

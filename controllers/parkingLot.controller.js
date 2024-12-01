@@ -1,5 +1,6 @@
 const { response } = require('express');
-const { createParkingLot, getParkingLots, getParkingLotById, updateParkingLot, deleteParkingLot } = require('../services/parkingLot.service');
+const ParkingSpot = require('../models/parkingSpot.model'); // Añade esta importación
+const { createParkingLot, getParkingLots, getParkingLotById, updateParkingLot, deleteParkingLot, getParkingSpotsByLotId } = require('../services/parkingLot.service');
 
 const createParkingLotController = async (req, res = response) => {
     try {
@@ -104,10 +105,37 @@ const deleteParkingLotController = async (req, res = response) => {
     }
 };
 
+const getParkingSpotsByParkingLotController = async (req, res = response) => {
+    try {
+        const { parkingLot, parkingSpots } = await getParkingSpotsByLotId(req.params.id);
+        
+        res.status(200).json({
+            ok: true,
+            parkingLot,
+            parkingSpots
+        });
+    } catch (error) {
+        console.error(error);
+        if (error.message === 'Parking lot no encontrado') {
+            return res.status(404).json({
+                ok: false,
+                msg: error.message
+            });
+        }
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener los espacios de estacionamiento',
+            error: error.message
+        });
+    }
+};
+
+
 module.exports = {
     createParkingLotController,
     getParkingLotsController,
     getParkingLotByIdController,
     updateParkingLotController,
-    deleteParkingLotController
+    deleteParkingLotController,
+    getParkingSpotsByParkingLotController,
 };

@@ -1,28 +1,25 @@
+// models/parkingLot.model.js
 const mongoose = require('mongoose');
 
-const ParkingLotSchema = new mongoose.Schema({
+const parkingLotSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        maxlength: 255
+        required: true
     },
     address: {
         type: String,
-        required: true,
-        maxlength: 255
+        required: true
     },
-    floors:
-    {
+    floors: {
         type: Number,
         required: true
     },
-    totalSpots:
-    {
+    totalSpots: {
         type: Number,
         required: true
-    },
+    }
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('ParkingLot', ParkingLotSchema);
+module.exports = mongoose.model('ParkingLot', parkingLotSchema);
