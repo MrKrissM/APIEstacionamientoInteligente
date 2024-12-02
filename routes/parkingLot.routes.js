@@ -6,7 +6,8 @@ const {
     getParkingLotByIdController,
     updateParkingLotController,
     deleteParkingLotController,
-    getParkingSpotsByParkingLotController
+    getParkingSpotsByParkingLotController,
+    createSpotsForParkingLotController  
 } = require('../controllers/parkingLot.controller');
 const validateFields = require('../middlewares/validateFields');
 const { authenticateToken } = require('../middlewares/auth');
@@ -72,6 +73,16 @@ router.delete(
         validateFields
     ],
     deleteParkingLotController
+);
+
+router.post(
+    '/:id/spots/create',
+    [
+        check('id', 'El ID no es válido').isMongoId(),
+        check('quantity', 'La cantidad de espacios es requerida').isInt({ min: 1 }),
+        validateFields
+    ],
+    createSpotsForParkingLotController
 );
 
 module.exports = router;

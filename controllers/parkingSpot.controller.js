@@ -128,11 +128,14 @@ const deleteParkingSpotController = async (req, res = response) => {
 };
 
 
+
+
 module.exports = {
     createParkingSpotController,
     getParkingSpotsController,
     getParkingSpotByIdController,
     getParkingSpotsByParkingLotNameController,
     updateParkingSpotController,
-    deleteParkingSpotController
+    deleteParkingSpotController,
+    
 };

@@ -1,22 +1,25 @@
 const ParkingLot = require('../models/parkingLot.model');
 const ParkingSpot = require('../models/parkingSpot.model');
 
-// En parkingLot.service.js
+// En tu parkingLot.service.js del backend
 const createParkingLot = async (parkingLotData) => {
     const parkingLot = new ParkingLot(parkingLotData);
     await parkingLot.save();
 
-    // Crear spots automáticamente
+    // Crear los spots automáticamente
     const spotsToCreate = [];
-    const spotsPerFloor = Math.ceil(parkingLot.totalSpots / parkingLot.floors);
+    const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    for (let floor = 1; floor <= parkingLot.floors; floor++) {
+    for (let floor = 0; floor < parkingLot.floors; floor++) {
+        const letraActual = letras[floor];
+        const spotsPerFloor = Math.ceil(parkingLot.totalSpots / parkingLot.floors);
+        
         for (let spotNum = 1; spotNum <= spotsPerFloor; spotNum++) {
             if (spotsToCreate.length < parkingLot.totalSpots) {
                 spotsToCreate.push({
                     parkingLotName: parkingLot.name,
-                    number: spotsToCreate.length + 1,
-                    floor,
+                    number: `${letraActual}${spotNum}`,
+                    floor: floor + 1,
                     isOccupied: false
                 });
             }
@@ -24,7 +27,6 @@ const createParkingLot = async (parkingLotData) => {
     }
 
     await ParkingSpot.insertMany(spotsToCreate);
-
     return parkingLot;
 };
 
